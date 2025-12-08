@@ -1,5 +1,8 @@
 "use client";
 
+import { getRecommendations } from "@/lib/api/recommendations";
+import type { RecommendationRequest } from "@/lib/types";
+
 export default function Home() {
   function getLocation() {
     return new Promise<GeolocationPosition>((resolve, reject) => {
@@ -42,10 +45,31 @@ export default function Home() {
       const position = await getLocation();
       const { latitude, longitude, accuracy } = position.coords;
       console.log("Location:", { latitude, longitude, accuracy });
-      // process the services, hmo, philhealth, etc.
+
+      // Mock services for testing
+      const mockServices: string[] = ["Ultrasound", "Pulmonology", "Cardiology"];
+
+      const request: RecommendationRequest = {
+        latitude,
+        longitude,
+        services: mockServices,
+        top_n: 5,
+        use_ml: true,
+      };
+      console.log("Sending request to ML worker:", request);
+
+      const result = await getRecommendations(request);
+      console.log("Recommendations received:", result);
+      console.log(`Found ${result.recommendations.length} hospitals`);
+
+      if (result.recommendations.length > 0) {
+        alert(`Found ${result.recommendations.length} hospitals!\nCheck console for details.`);
+      } else {
+        alert("No hospitals found for the given criteria.");
+      }
     } catch (error) {
-      console.error("Error getting location:", error);
-      alert(error instanceof Error ? error.message : "Failed to get location.");
+      console.error("Error getting location or recommendations:", error);
+      alert(error instanceof Error ? error.message : "Failed to get recommendations.");
     }
   }
 

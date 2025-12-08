@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { getRecommendations } from "../../api/recommendation.api";
-import type { RecommendationRequest, RecommendationResponse } from "../../types/recommendation";
+import { getRecommendations } from "../../api/recommendations";
+import type { RecommendationRequest, RecommendationResponse } from "../../types";
 
 /**
  * SWR key generator for recommendation requests

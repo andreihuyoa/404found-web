@@ -6,7 +6,7 @@ export interface RecommendationRequest {
   use_ml?: boolean;
 }
 
-export interface HospitalRecommendation {
+export interface Recommendation {
   id?: string;
   name: string;
   latitude: number;
@@ -17,11 +17,11 @@ export interface HospitalRecommendation {
 }
 
 export interface RecommendationResponse {
-  recommendations: HospitalRecommendation[];
+  recommendations: Recommendation[];
   total?: number;
 }
 
-export interface ApiErrorResponse {
+export interface ErrorResponse {
   error: string;
   code?: string;
 }

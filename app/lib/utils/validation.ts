@@ -1,4 +1,4 @@
-import type { RecommendationRequest } from "../types/recommendation";
+import type { RecommendationRequest } from "../types";
 
 /**
  * Validates recommendation request

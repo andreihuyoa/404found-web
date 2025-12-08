@@ -1,5 +1,5 @@
 import { API_CONFIG } from "../config/api.config";
-import type { RecommendationRequest, RecommendationResponse } from "../types/recommendation";
+import type { RecommendationRequest, RecommendationResponse } from "../types";
 
 /**
  * Get hospital recommendations from ML service
@@ -10,7 +10,10 @@ import type { RecommendationRequest, RecommendationResponse } from "../types/rec
 export async function getRecommendations(
   request: RecommendationRequest
 ): Promise<RecommendationResponse> {
-  const url = `${API_CONFIG.MODEL_BASE_URL}/recommend`;
+  const url = `${API_CONFIG.MODEL_BASE_URL}/csrp/recommend`;
+
+  console.log("Calling:", url);
+  console.log("Request:", JSON.stringify(request, null, 2));
 
   const response = await fetch(url, {
     method: "POST",
