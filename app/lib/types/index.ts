@@ -13,6 +13,10 @@ export interface Recommendation {
   Distance?: number;
   HMO?: string;
   name?: string;
+  "Name of Healthcare Facility"?: string;
+  "Type of Healthcare Facility"?: string;
+  PHILHEALTH?: string;
+  Preference_Score?: number;
   latitude?: number;
   longitude?: number;
 }

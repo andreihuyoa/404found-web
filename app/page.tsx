@@ -166,6 +166,10 @@ export default function Home() {
       "Distance",
       "HMO",
       "name",
+      "Name of Healthcare Facility",
+      "Type of Healthcare Facility",
+      "PHILHEALTH",
+      "Preference_Score",
       "latitude",
       "longitude",
       "score",
@@ -272,7 +276,9 @@ export default function Home() {
                     >
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-lg font-semibold">
-                          {hospital.name || `Hospital ${index + 1}`}
+                          {hospital["Name of Healthcare Facility"] ||
+                            hospital.name ||
+                            `Hospital ${index + 1}`}
                         </h3>
                         <div className="flex gap-2">
                           {hospital.Classification && (
@@ -286,6 +292,14 @@ export default function Home() {
                               {hospital.Classification}
                             </span>
                           )}
+                          {hospital.PHILHEALTH && (
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200`}
+                            >
+                              Philhealth:{" "}
+                              {hospital.PHILHEALTH.toLowerCase() === "yes" ? "Yes" : "No"}
+                            </span>
+                          )}
                           {hospital.HMO && (
                             <span
                               className={`px-2 py-1 rounded text-xs font-medium ${
@@ -294,7 +308,7 @@ export default function Home() {
                                   : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                               }`}
                             >
-                              HMO: {hospital.HMO}
+                              HMO: {hospital.HMO.toLowerCase() === "yes" ? "Yes" : "No"}
                             </span>
                           )}
                         </div>
