@@ -226,7 +226,7 @@ export default function Home() {
         )}
       </div>
 
-      <select
+      {/* <select
         name="hospital-type"
         id="hospital-type"
         className="border-2 border-zinc-300 rounded-lg p-2 w-full max-w-md"
@@ -234,7 +234,7 @@ export default function Home() {
         <option value="all">All</option>
         <option value="public">Public</option>
         <option value="private">Private</option>
-      </select>
+      </select> */}
 
       <button
         className="bg-blue-500 text-white rounded-lg p-2 w-full max-w-md hover:bg-blue-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
