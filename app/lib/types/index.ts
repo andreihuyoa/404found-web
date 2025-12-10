@@ -7,21 +7,36 @@ export interface RecommendationRequest {
 }
 
 export interface Recommendation {
-  id?: string;
-  name: string;
+  [key: string]: string | number | undefined;
+  Address?: string;
+  Classification?: string;
+  Distance?: number;
+  HMO?: string;
+  name?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface RecommendationQuery {
   latitude: number;
   longitude: number;
-  distance?: number;
-  score?: number;
-  services?: string[];
+  services: string[];
+  top_n?: number;
 }
 
 export interface RecommendationResponse {
+  count: number;
+  ml_enabled: boolean;
+  query: RecommendationQuery;
   recommendations: Recommendation[];
-  total?: number;
 }
 
 export interface ErrorResponse {
   error: string;
   code?: string;
+}
+
+export interface ServicesResponse {
+  count: number;
+  services: string[];
 }
