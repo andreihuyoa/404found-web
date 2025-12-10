@@ -49,7 +49,7 @@ export function useRecommendations(
 
   return {
     recommendations: data?.recommendations ?? [],
-    total: data?.total,
+    total: data?.count,
     isLoading,
     isError: !!error,
     error: error as Error | undefined,
