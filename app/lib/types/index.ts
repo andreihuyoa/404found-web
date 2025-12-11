@@ -6,19 +6,28 @@ export interface RecommendationRequest {
   use_ml?: boolean;
 }
 
+export interface InsuranceCoverage {
+  hmo: boolean;
+  philhealth: boolean;
+}
+
 export interface Recommendation {
-  [key: string]: string | number | undefined;
-  Address?: string;
-  Classification?: string;
-  Distance?: number;
-  HMO?: string;
-  name?: string;
-  "Name of Healthcare Facility"?: string;
-  "Type of Healthcare Facility"?: string;
-  PHILHEALTH?: string;
-  Preference_Score?: number;
-  latitude?: number;
-  longitude?: number;
+  name_of_healthcare_facility: string;
+  type: "Hospital" | "Clinic";
+  classification: "Private" | "Public";
+  address: string;
+  municipality: string;
+  region: string;
+  contact_number: string;
+  operating_hours: string;
+  latitude: number;
+  longitude: number;
+  services: string[];
+  insurance: InsuranceCoverage;
+  hmo_coverage: string[];
+  other_list_of_hmo: string[];
+  distance?: number;
+  preference_score?: number;
 }
 
 export interface RecommendationQuery {
