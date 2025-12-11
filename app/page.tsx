@@ -6,6 +6,7 @@ import { getServices } from "@/lib/api/services";
 import { toTitleCase } from "@/lib/utils/text";
 import type { RecommendationRequest, RecommendationResponse } from "@/lib/types";
 import MapboxSection from "../components/MapboxSection";
+import Tooltip from "../components/ui/Tooltip";
 
 export default function Home() {
   const [services, setServices] = useState<string[]>([]);
@@ -259,6 +260,12 @@ export default function Home() {
                     const classification = hospital.classification;
                     const philhealth = hospital.insurance?.philhealth;
                     const hmo = hospital.insurance?.hmo;
+                    const otherHmoList =
+                      Array.isArray(hospital.other_list_of_hmo) &&
+                      hospital.other_list_of_hmo.length > 0
+                        ? hospital.other_list_of_hmo.map((item) => toTitleCase(item))
+                        : [];
+                    const otherHmoRemaining = otherHmoList.slice(5).join(", ");
 
                     return (
                       <div
@@ -380,7 +387,7 @@ export default function Home() {
                                 Other HMOs:
                               </p>
                               <div className="flex flex-wrap gap-2">
-                                {hospital.other_list_of_hmo.map((hmoItem) => (
+                                {hospital.other_list_of_hmo.slice(0, 5).map((hmoItem) => (
                                   <span
                                     key={hmoItem}
                                     className="px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-xs"
@@ -388,6 +395,13 @@ export default function Home() {
                                     {toTitleCase(hmoItem)}
                                   </span>
                                 ))}
+                                {hospital.other_list_of_hmo.length > 5 && (
+                                  <Tooltip content={otherHmoRemaining}>
+                                    <span className="px-2 py-1 bg-zinc-200 dark:bg-zinc-600 rounded text-xs cursor-pointer">
+                                      + {otherHmoList.length - 5} more
+                                    </span>
+                                  </Tooltip>
+                                )}
                               </div>
                             </div>
                           )}
