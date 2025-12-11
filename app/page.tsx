@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getRecommendations } from "@/lib/api/recommendations";
 import { getServices } from "@/lib/api/services";
+import { toTitleCase } from "@/lib/utils/text";
 import type { RecommendationRequest, RecommendationResponse } from "@/lib/types";
 import MapboxSection from "../components/MapboxSection";
 
@@ -224,19 +225,21 @@ export default function Home() {
       >
         {/* Map Section - Always visible */}
         <div className={recommendations ? "w-full lg:w-1/2" : "w-full max-w-4xl"}>
-          <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg p-4">
+          <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg p-4 w-full h-[420px] lg:h-[600px]">
             {/* <h2 className="text-xl font-bold mb-4">Map</h2> */}
-            <MapboxSection
-              userLocation={userLocation}
-              recommendations={recommendations?.recommendations}
-            />
+            <div className="h-full">
+              <MapboxSection
+                userLocation={userLocation}
+                recommendations={recommendations?.recommendations}
+              />
+            </div>
           </div>
         </div>
 
         {/* Recommendations Section - Only shown when recommendations exist */}
         {recommendations && (
           <div className="w-full lg:w-1/2">
-            <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg p-6">
+            <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg p-6 w-full h-[420px] lg:h-[600px] flex flex-col">
               <div className="mb-4">
                 <h2 className="text-xl font-bold mb-2">Recommended Hospitals</h2>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -250,7 +253,7 @@ export default function Home() {
                   No hospitals found for the given criteria.
                 </p>
               ) : (
-                <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                <div className="space-y-4 overflow-y-auto flex-1">
                   {recommendations.recommendations.map((hospital, index) => {
                     const serviceFields = getServiceFields(hospital);
                     const classification = hospital.classification;
@@ -278,27 +281,24 @@ export default function Home() {
                                 {classification}
                               </span>
                             )}
-                            {typeof philhealth === "boolean" && (
+                            {philhealth === true && (
                               <span className="px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
-                                PhilHealth: {philhealth ? "Yes" : "No"}
+                                PhilHealth
                               </span>
                             )}
-                            {typeof hmo === "boolean" && (
+                            {hmo === true && (
                               <span
-                                className={`px-2 py-1 rounded text-xs font-medium ${
-                                  hmo
-                                    ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                                    : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-                                }`}
+                                className={`px-2 py-1 rounded text-xs font-medium ${"bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"}`}
                               >
-                                HMO: {hmo ? "Yes" : "No"}
+                                HMO
                               </span>
                             )}
-                            {hospital.preference_score !== undefined && (
+
+                            {/* {hospital.preference_score !== undefined && (
                               <span className="px-2 py-1 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
                                 Score: {hospital.preference_score.toFixed(2)}
                               </span>
-                            )}
+                            )} */}
                           </div>
                         </div>
 
@@ -328,14 +328,28 @@ export default function Home() {
                               Available Services:
                             </p>
                             <div className="flex flex-wrap gap-2">
-                              {serviceFields.map((service) => (
-                                <span
-                                  key={service}
-                                  className="px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-xs"
-                                >
-                                  {service}
-                                </span>
-                              ))}
+                              {[...serviceFields]
+                                .sort((a, b) => {
+                                  const aSel = selectedServices.includes(a);
+                                  const bSel = selectedServices.includes(b);
+                                  if (aSel === bSel) return a.localeCompare(b);
+                                  return aSel ? -1 : 1;
+                                })
+                                .map((service) => {
+                                  const isSelected = selectedServices.includes(service);
+                                  return (
+                                    <span
+                                      key={service}
+                                      className={`px-2 py-1 rounded text-xs ${
+                                        isSelected
+                                          ? "bg-blue-200 text-blue-900 dark:bg-blue-900 dark:text-blue-100"
+                                          : "bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-100"
+                                      }`}
+                                    >
+                                      {service}
+                                    </span>
+                                  );
+                                })}
                             </div>
                           </div>
                         )}
@@ -371,7 +385,7 @@ export default function Home() {
                                     key={hmoItem}
                                     className="px-2 py-1 bg-zinc-100 dark:bg-zinc-700 rounded text-xs"
                                   >
-                                    {hmoItem}
+                                    {toTitleCase(hmoItem)}
                                   </span>
                                 ))}
                               </div>

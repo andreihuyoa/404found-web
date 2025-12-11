@@ -148,12 +148,12 @@ export default function MapboxSection({
 
         // Create popup with hospital info
         const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-          `<div class="p-2">
-            <h3 class="font-semibold text-sm">${hospitalName}</h3>
+          `<div class="p-2 rounded-4xl">
+            <h3 class="font-semibold text-md text-black">${hospitalName}</h3>
             ${hospital.address ? `<p class="text-xs text-gray-600">${hospital.address}</p>` : ""}
             ${
               hospital.distance !== undefined
-                ? `<p class="text-xs text-gray-600 mt-1">Distance: ${
+                ? `<p class="text-xs text-gray-600 mt-1">Distance from you: ${
                     hospital.distance < 1000
                       ? `${Math.round(hospital.distance)}m`
                       : `${(hospital.distance / 1000).toFixed(2)}km`
