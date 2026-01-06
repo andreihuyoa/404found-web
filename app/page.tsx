@@ -16,6 +16,7 @@ export default function Home() {
   const [userLocation, setUserLocation] = useState<
     { latitude: number; longitude: number } | undefined
   >(undefined);
+  const [showInfo, setShowInfo] = useState(false);
 
   // Fetch services on component mount
   useEffect(() => {
@@ -159,7 +160,133 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4 min-h-screen items-center justify-start bg-zinc-50 font-sans dark:bg-black p-4">
-      <h1 className="text-2xl font-bold">Hospital Recommendation System Demo</h1>
+      <h1 className="text-2xl font-bold">Ermita Healthcare Facility Finder Thesis Project</h1>
+
+      {/* Information Section */}
+      <div className="w-full max-w-4xl">
+        <div className="bg-blue-50 dark:bg-blue-950/30 border-2 border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            className="w-full flex items-center justify-between text-left transition-colors duration-200 rounded p-2 -m-2"
+          >
+            <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100">
+              ℹ️ About this application
+            </h2>
+            <span
+              className={`text-blue-600 dark:text-blue-400 text-xl transition-transform duration-300 hover:text-blue-800 dark:hover:text-blue-200 cursor-pointer ${
+                showInfo ? "rotate-0" : "rotate-90"
+              }`}
+            >
+              {showInfo ? "−" : "+"}
+            </span>
+          </button>
+
+          <div
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+              showInfo ? "max-h-[3000px] opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"
+            }`}
+          >
+            <div className="space-y-4 text-sm text-blue-900 dark:text-blue-200">
+              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded p-3">
+                <h3 className="font-semibold mb-1 text-base">⚠️ Important Notes:</h3>
+                <ul className="list-disc list-inside space-y-1 ml-2">
+                  <li>
+                    <strong>Coverage:</strong> This application currently only recommends healthcare
+                    facilities located in Ermita, Manila. We plan to expand the coverage to other
+                    areas in the future.
+                  </li>
+                  <li>
+                    <strong>Location Permission Required:</strong> This application needs access to
+                    your location to provide accurate recommendations.
+                  </li>
+                  <li>
+                    <strong>Service Selection:</strong> You must select at least one service before
+                    searching.
+                  </li>
+                  <li>
+                    <strong>Results Limit:</strong> The system returns up to 5 top-ranked
+                    recommendations to keep results relevant.
+                  </li>
+                  <li>
+                    <strong>Accuracy:</strong> Location accuracy depends on the device&apos;s GPS
+                    capabilities and network conditions.
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2 text-base">What is this application?</h3>
+                <p className="mb-2">
+                  This Hospital Recommendation System is a healthcare facility finder that helps
+                  users discover nearby hospitals based on their location and specific medical
+                  service needs. The system uses machine learning algorithms to provide personalized
+                  recommendations, ranking hospitals by relevance, distance, and service
+                  availability.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2 text-base">How to use:</h3>
+                <ol className="list-decimal list-inside space-y-2 ml-2">
+                  <li>
+                    <strong>Select Medical Services:</strong> In the dropdown menu below, select one
+                    or more medical services you need. You can select multiple services by holding
+                    <kbd className="px-1.5 py-0.5 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-600 rounded text-xs mx-1">
+                      Ctrl
+                    </kbd>
+                    (Windows/Linux) or
+                    <kbd className="px-1.5 py-0.5 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-600 rounded text-xs mx-1">
+                      Cmd
+                    </kbd>
+                    (Mac) while clicking. The selected services will be highlighted, and you&apos;ll
+                    see a count of how many services you&apos;ve selected.
+                  </li>
+                  <li>
+                    <strong>Click the Search Button:</strong> Once you&apos;ve selected at least one
+                    service, click the &quot;Search&quot; button. The application will:
+                    <ul className="list-disc list-inside ml-6 mt-1 space-y-1">
+                      <li>Request your location permission (if not already granted)</li>
+                      <li>Use your current geographic location to find nearby hospitals</li>
+                      <li>Filter hospitals that offer your selected services</li>
+                      <li>
+                        Rank results using ML algorithms based on distance, service match, and other
+                        factors
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>Review Results:</strong> After searching, you&apos;ll see:
+                    <ul className="list-disc list-inside ml-6 mt-1 space-y-1">
+                      <li>
+                        <strong>Interactive Map:</strong> A map showing your location (blue marker)
+                        and recommended hospitals (red markers). Click on markers to see more
+                        details.
+                      </li>
+                      <li>
+                        <strong>Hospital List:</strong> A detailed list of up to 5 recommended
+                        hospitals, sorted by relevance. Each entry includes:
+                        <ul className="list-circle list-inside ml-6 mt-1 space-y-1">
+                          <li>Hospital name and classification (Public/Private)</li>
+                          <li>Full address and contact information</li>
+                          <li>Distance from your location</li>
+                          <li>Available services (with your selected services highlighted)</li>
+                          <li>Insurance coverage (PhilHealth, HMO, and other HMO providers)</li>
+                          <li>Operating hours and location details</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>Explore Recommendations:</strong> Scroll through the hospital list to
+                    compare options. Services you selected are highlighted in blue, while other
+                    available services are shown in gray. Hover over the &quot;+ X more&quot;
+                    tooltip to see additional HMO providers.
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="w-full max-w-md flex flex-col gap-2">
         <label htmlFor="services" className="text-sm font-medium">
