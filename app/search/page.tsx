@@ -37,7 +37,6 @@ export default function SearchPage() {
     { latitude: number; longitude: number } | undefined
   >(undefined);
 
-  // Fetch services on component mount
   useEffect(() => {
     // Services are statically defined in HEALTH_SERVICES; just unblock loading.
     // getServices() is still called to validate the API is reachable.
@@ -128,8 +127,8 @@ export default function SearchPage() {
 
       const position = await getLocation();
       const { latitude, longitude, accuracy } = position.coords;
-      console.log("Location:", { latitude, longitude, accuracy });
-      console.log("Selected services:", selectedServices);
+      // console.log("Location:", { latitude, longitude, accuracy });
+      // console.log("Selected services:", selectedServices);
 
       // Store user location for map
       setUserLocation({ latitude, longitude });
@@ -141,11 +140,11 @@ export default function SearchPage() {
         top_n: 5,
         use_ml: true,
       };
-      console.log("Sending request to ML worker:", request);
+      // console.log("Sending request to ML worker:", request);
 
       const result = await getRecommendations(request);
-      console.log("Recommendations received:", result);
-      console.log(`Found ${result.recommendations.length} hospitals`);
+      // console.log("Recommendations received:", result);
+      // console.log(`Found ${result.recommendations.length} hospitals`);
 
       setRecommendations(result);
     } catch (error) {
@@ -302,7 +301,8 @@ export default function SearchPage() {
             <MapboxSection
               userLocation={userLocation}
               recommendations={recommendations?.recommendations}
-              zoomLevel={12}
+              zoomLevel={14}
+              showBoundary={true}
             />
           </div>
         </div>

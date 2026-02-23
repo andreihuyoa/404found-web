@@ -9,7 +9,7 @@ import type { ServicesResponse } from "../types";
 export async function getServices(): Promise<string[]> {
   const url = `${API_CONFIG.MODEL_BASE_URL}/csrp/services`;
 
-  console.log("Fetching services from:", url);
+  // console.log("Fetching services from:", url);
 
   const response = await fetch(url, {
     method: "GET",
@@ -36,17 +36,25 @@ export async function getServices(): Promise<string[]> {
 
   // Validate response structure
   if (!data || typeof data !== "object") {
-    throw new Error("Invalid response format from API: expected object with services array");
+    throw new Error(
+      "Invalid response format from API: expected object with services array",
+    );
   }
 
   if (!Array.isArray(data.services)) {
-    throw new Error("Invalid response format from API: services must be an array");
+    throw new Error(
+      "Invalid response format from API: services must be an array",
+    );
   }
 
   // Validate that all services are strings
-  const invalidServices = data.services.filter((service) => typeof service !== "string");
+  const invalidServices = data.services.filter(
+    (service) => typeof service !== "string",
+  );
   if (invalidServices.length > 0) {
-    throw new Error("Invalid response format from API: all services must be strings");
+    throw new Error(
+      "Invalid response format from API: all services must be strings",
+    );
   }
 
   return data.services;

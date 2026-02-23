@@ -8,12 +8,12 @@ import type { RecommendationRequest, RecommendationResponse } from "../types";
  * @throws {Error} When API call fails
  */
 export async function getRecommendations(
-  request: RecommendationRequest
+  request: RecommendationRequest,
 ): Promise<RecommendationResponse> {
   const url = `${API_CONFIG.MODEL_BASE_URL}/csrp/recommend`;
 
-  console.log("Calling:", url);
-  console.log("Request:", JSON.stringify(request, null, 2));
+  // console.log("Calling:", url);
+  // console.log("Request:", JSON.stringify(request, null, 2));
 
   const response = await fetch(url, {
     method: "POST",
