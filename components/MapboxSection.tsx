@@ -50,7 +50,7 @@ export default function MapboxSection({
         ) {
           console.warn(
             "Mapbox telemetry blocked by ad blocker (this is harmless):",
-            e.error?.message
+            e.error?.message,
           );
           return;
         }
@@ -83,7 +83,10 @@ export default function MapboxSection({
     if (!mapRef.current || !userLocation) return;
 
     const map = mapRef.current;
-    const center: [number, number] = [userLocation.longitude, userLocation.latitude];
+    const center: [number, number] = [
+      userLocation.longitude,
+      userLocation.latitude,
+    ];
 
     // Fly to user location
     map.flyTo({
@@ -97,22 +100,14 @@ export default function MapboxSection({
       _userLocation?: boolean;
     }
     const existingUserMarker = markersRef.current.find(
-      (m) => (m as MarkerWithUserLocation)._userLocation
+      (m) => (m as MarkerWithUserLocation)._userLocation,
     ) as MarkerWithUserLocation | undefined;
     if (existingUserMarker) {
       existingUserMarker.setLngLat(center);
     } else {
-      // Create custom marker element for user location
-      const el = document.createElement("div");
-      el.className = "user-marker";
-      el.style.width = "20px";
-      el.style.height = "20px";
-      el.style.borderRadius = "50%";
-      el.style.backgroundColor = "#3b82f6";
-      el.style.border = "3px solid white";
-      el.style.boxShadow = "0 2px 4px rgba(0,0,0,0.3)";
-
-      const userMarker = new mapboxgl.Marker({ element: el })
+      const userMarker = new mapboxgl.Marker({
+        color: "var(--primary)",
+      })
         .setLngLat(center)
         .addTo(map) as MarkerWithUserLocation;
       userMarker._userLocation = true;
@@ -160,22 +155,11 @@ export default function MapboxSection({
                   }</p>`
                 : ""
             }
-          </div>`
+          </div>`,
         );
 
-        // Create custom marker element for hospitals using pushpin icon
-        const el = document.createElement("img");
-        el.src = "/pushpin-icon.png";
-        el.className = "hospital-marker";
-        el.style.width = "32px";
-        el.style.height = "32px";
-        el.style.cursor = "pointer";
-        el.style.userSelect = "none";
-        el.style.pointerEvents = "auto";
-
         const marker = new mapboxgl.Marker({
-          element: el,
-          anchor: "bottom", // Anchor at bottom center of pushpin icon
+          color: "var(--accent)",
         })
           .setLngLat([lng, lat])
           .setPopup(popup)
@@ -224,10 +208,10 @@ export default function MapboxSection({
   }, []);
 
   return (
-    <div className="w-full h-full min-h-[400px] rounded-lg overflow-hidden shadow-lg">
+    <div className="h-full min-h-[400px] w-full overflow-hidden rounded-lg shadow-lg">
       <div
         ref={mapContainerRef}
-        className="w-full h-full min-h-[400px]"
+        className="h-full min-h-[400px] w-full"
         style={{ minHeight: "400px" }}
       />
       {!mapboxgl.accessToken && (
