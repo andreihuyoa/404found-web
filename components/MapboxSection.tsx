@@ -208,23 +208,15 @@ export default function MapboxSection({
       }
     });
 
-    // Fit bounds to show all markers if there are recommendations
-    if (recommendations.length > 0 && userLocation) {
-      const bounds = new mapboxgl.LngLatBounds();
-      bounds.extend([userLocation.longitude, userLocation.latitude]);
-
-      recommendations.forEach((hospital) => {
-        if (hospital.latitude && hospital.longitude) {
-          bounds.extend([hospital.longitude, hospital.latitude]);
-        }
-      });
-
-      map.fitBounds(bounds, {
-        padding: { top: 50, bottom: 50, left: 50, right: 50 },
-        maxZoom: 15,
+    const top = recommendations[0];
+    if (top?.latitude && top?.longitude) {
+      map.flyTo({
+        center: [top.longitude, top.latitude],
+        zoom: 15,
+        duration: 1500,
       });
     }
-  }, [recommendations, userLocation]);
+  }, [recommendations]);
 
   // Hide logo and attribution
   useEffect(() => {
