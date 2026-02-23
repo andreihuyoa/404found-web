@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+gsap.registerPlugin(ScrollToPlugin);
 
 import StepCard from "../components/ui/StepCard";
 import FeatureCard from "../components/ui/FeatureCard";
@@ -27,6 +31,9 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -35,8 +42,64 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Reusable press-bounce for links and buttons
+  const animatePress = useCallback((el: HTMLElement | null) => {
+    if (!el) return;
+    gsap.fromTo(
+      el,
+      { scale: 0.91 },
+      { scale: 1, duration: 0.4, ease: "back.out(3)" },
+    );
+  }, []);
+
+  const scrollToSection = useCallback(
+    (id: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      animatePress(e.currentTarget);
+      gsap.to(window, {
+        duration: 0.9,
+        scrollTo: { y: id, offsetY: 72 },
+        ease: "power3.inOut",
+      });
+    },
+    [animatePress],
+  );
+
+  const toggleMenu = useCallback(() => {
+    const menu = mobileMenuRef.current;
+    const btn = hamburgerRef.current;
+
+    // Spin the icon during swap
+    if (btn) {
+      gsap.fromTo(
+        btn,
+        { rotate: isMenuOpen ? -45 : 45, scale: 0.8 },
+        { rotate: 0, scale: 1, duration: 0.25, ease: "back.out(2.5)" },
+      );
+    }
+
+    if (!isMenuOpen) {
+      setIsMenuOpen(true);
+      // Slide down
+      gsap.fromTo(
+        menu,
+        { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: 0.3, ease: "power3.out" },
+      );
+    } else {
+      // Slide up, then unmount
+      gsap.to(menu, {
+        height: 0,
+        opacity: 0,
+        duration: 0.25,
+        ease: "power3.in",
+        onComplete: () => setIsMenuOpen(false),
+      });
+    }
+  }, [isMenuOpen]);
+
   return (
-    <div className="bg-background text-text min-h-screen">
+    <div className="bg-background text-text min-h-screen cursor-default">
       <nav
         className={`fixed top-0 z-50 w-full transition-all duration-300 ${
           scrolled
@@ -46,45 +109,60 @@ export default function Home() {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between gap-2">
-            <div className="flex min-w-0 items-center gap-2">
+            <button
+              className="flex min-w-0 cursor-pointer items-center gap-2"
+              onClick={(e) => {
+                animatePress(e.currentTarget);
+                gsap.to(window, {
+                  duration: 0.9,
+                  scrollTo: 0,
+                  ease: "power3.inOut",
+                });
+              }}
+            >
               <div className="bg-primary rounded-lg p-2">
                 <Heart className="h-6 w-6 text-white" />
               </div>
               <span className="text-primary truncate text-base font-semibold sm:text-lg md:text-xl">
                 CSRP404 Thesis Project
               </span>
-            </div>
+            </button>
 
             <div className="hidden items-center gap-8 md:flex">
               <a
                 href="#features"
                 className="text-text/90 hover:text-primary font-medium transition-colors"
+                onClick={scrollToSection("#features")}
               >
                 Features
               </a>
               <a
                 href="#how-it-works"
                 className="text-text/90 hover:text-primary font-medium transition-colors"
+                onClick={scrollToSection("#how-it-works")}
               >
                 How It Works
               </a>
               <a
                 href="#about"
                 className="text-text/90 hover:text-primary font-medium transition-colors"
+                onClick={scrollToSection("#about")}
               >
                 About
               </a>
               <Link
                 href="/search"
                 className="bg-primary rounded-lg px-6 py-2 font-medium text-white transition-all duration-200 hover:shadow-md hover:brightness-95"
+                onClick={(e) => animatePress(e.currentTarget)}
               >
                 Try The Demo
               </Link>
             </div>
 
             <button
+              ref={hamburgerRef}
               className="text-text md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={toggleMenu}
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -95,33 +173,42 @@ export default function Home() {
           </div>
         </div>
 
-        {isMenuOpen && (
-          <div className="bg-background border-secondary/50 border-t shadow-md md:hidden">
-            <div className="space-y-3 px-4 py-4">
-              <a
-                href="#features"
-                className="text-text/90 hover:text-primary block font-medium transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#how-it-works"
-                className="text-text/90 hover:text-primary block font-medium transition-colors"
-              >
-                How It Works
-              </a>
-              <a
-                href="#about"
-                className="text-text/90 hover:text-primary block font-medium transition-colors"
-              >
-                About
-              </a>
-              <button className="bg-primary w-full rounded-lg px-6 py-2 font-medium text-white">
-                Get Started
-              </button>
-            </div>
+        {/* Always mounted so GSAP can animate height in/out */}
+        <div
+          ref={mobileMenuRef}
+          className="bg-background border-secondary/50 overflow-hidden border-t shadow-md md:hidden"
+          style={{ height: 0, opacity: 0 }}
+        >
+          <div className="space-y-3 px-4 py-4">
+            <a
+              href="#features"
+              className="text-text/90 hover:text-primary block font-medium transition-colors"
+              onClick={scrollToSection("#features")}
+            >
+              Features
+            </a>
+            <a
+              href="#how-it-works"
+              className="text-text/90 hover:text-primary block font-medium transition-colors"
+              onClick={scrollToSection("#how-it-works")}
+            >
+              How It Works
+            </a>
+            <a
+              href="#about"
+              className="text-text/90 hover:text-primary block font-medium transition-colors"
+              onClick={scrollToSection("#about")}
+            >
+              About
+            </a>
+            <button
+              className="bg-primary w-full rounded-lg px-6 py-2 font-medium text-white"
+              onClick={(e) => animatePress(e.currentTarget)}
+            >
+              Get Started
+            </button>
           </div>
-        )}
+        </div>
       </nav>
 
       <section className="px-4 pt-24 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:px-8 lg:pt-32 lg:pb-20">
@@ -202,7 +289,8 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <Star className="text-accent fill-accent h-5 w-5" />
                 <span>
-                  <strong className="text-text">20+</strong> Verified Providers
+                  <strong className="text-text">20+</strong> Verified Healthcare
+                  Providers
                 </span>
               </div>
               <div className="flex items-center gap-2">

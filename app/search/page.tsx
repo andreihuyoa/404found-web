@@ -188,7 +188,7 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="bg-background dark:bg-foreground flex min-h-screen flex-col lg:h-screen lg:overflow-hidden">
+    <div className="bg-background dark:bg-foreground flex min-h-screen cursor-default flex-col lg:h-screen lg:overflow-hidden">
       {/* Navigation — no extra padding per requirement */}
       <header className="border-text/10 shrink-0 border-b bg-white shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -200,7 +200,7 @@ export default function SearchPage() {
               <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               <span className="text-sm font-medium sm:text-base">Back</span>
             </Link>
-            <p className="text-primary min-w-0 flex-1 px-2 text-center font-serif text-xl font-bold sm:text-4xl">
+            <p className="text-primary min-w-0 flex-1 cursor-default px-2 text-center font-serif text-xl font-bold sm:text-4xl">
               Find Healthcare Providers
             </p>
             <div className="w-16 shrink-0 sm:w-20" />
@@ -272,7 +272,7 @@ export default function SearchPage() {
             <button
               onClick={handleSearch}
               disabled={isLoading || selectedServices.length === 0}
-              className="bg-primary mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-primary mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? (
                 <>
