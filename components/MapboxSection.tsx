@@ -11,12 +11,14 @@ interface MapboxSectionProps {
   userLocation?: { latitude: number; longitude: number };
   recommendations?: Recommendation[];
   zoomLevel?: number;
+  showBoundary?: boolean;
 }
 
 export default function MapboxSection({
   userLocation,
   recommendations = [],
   zoomLevel = 10,
+  showBoundary = true,
 }: MapboxSectionProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -61,6 +63,43 @@ export default function MapboxSection({
       map.on("load", () => {
         if (!map.hasControl(new mapboxgl.NavigationControl())) {
           map.addControl(new mapboxgl.NavigationControl(), "top-right");
+        }
+
+        if (showBoundary) {
+          // Fetch from /public at runtime to avoid bundling the large GeoJSON
+          fetch("/ermita.geojson")
+            .then((res) => {
+              if (!res.ok)
+                throw new Error(`Failed to load boundary: ${res.status}`);
+              return res.json();
+            })
+            .then((data: GeoJSON.FeatureCollection) => {
+              if (!map.getSource("ermita-boundary")) {
+                map.addSource("ermita-boundary", { type: "geojson", data });
+              }
+
+              map.addLayer({
+                id: "ermita-fill",
+                type: "fill",
+                source: "ermita-boundary",
+                paint: {
+                  "fill-color": "#f6175d",
+                  "fill-opacity": 0.075,
+                },
+              });
+
+              map.addLayer({
+                id: "ermita-border",
+                type: "line",
+                source: "ermita-boundary",
+                paint: {
+                  "line-color": "#f6175d",
+                  "line-width": 2.5,
+                  "line-opacity": 0.7,
+                },
+              });
+            })
+            .catch((err) => console.error("Ermita boundary load error:", err));
         }
       });
     } catch (error) {
