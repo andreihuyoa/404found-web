@@ -36,78 +36,87 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-text">
+    <div className="bg-background text-text min-h-screen">
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          scrolled ? "bg-background/60 backdrop-blur-lg shadow-md" : "bg-transparent"
+        className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+          scrolled
+            ? "bg-background/60 shadow-md backdrop-blur-lg"
+            : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 gap-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="bg-primary p-2 rounded-lg">
-                <Heart className="w-6 h-6 text-white" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <div className="bg-primary rounded-lg p-2">
+                <Heart className="h-6 w-6 text-white" />
               </div>
-              <span className="text-base sm:text-lg md:text-xl font-semibold text-primary truncate">
+              <span className="text-primary truncate text-base font-semibold sm:text-lg md:text-xl">
                 CSRP404 Thesis Project
               </span>
             </div>
 
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden items-center gap-8 md:flex">
               <a
                 href="#features"
-                className="text-text/90 hover:text-primary transition-colors font-medium"
+                className="text-text/90 hover:text-primary font-medium transition-colors"
               >
                 Features
               </a>
               <a
                 href="#how-it-works"
-                className="text-text/90 hover:text-primary transition-colors font-medium"
+                className="text-text/90 hover:text-primary font-medium transition-colors"
               >
                 How It Works
               </a>
               <a
                 href="#about"
-                className="text-text/90 hover:text-primary transition-colors font-medium"
+                className="text-text/90 hover:text-primary font-medium transition-colors"
               >
                 About
               </a>
               <Link
                 href="/search"
-                className="bg-primary text-white px-6 py-2 rounded-lg hover:shadow-md hover:brightness-95 transition-all duration-200 font-medium"
+                className="bg-primary rounded-lg px-6 py-2 font-medium text-white transition-all duration-200 hover:shadow-md hover:brightness-95"
               >
                 Try The Demo
               </Link>
             </div>
 
-            <button className="md:hidden text-text" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <button
+              className="text-text md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden bg-background border-t border-secondary/50 shadow-md">
-            <div className="px-4 py-4 space-y-3">
+          <div className="bg-background border-secondary/50 border-t shadow-md md:hidden">
+            <div className="space-y-3 px-4 py-4">
               <a
                 href="#features"
-                className="block text-text/90 hover:text-primary transition-colors font-medium"
+                className="text-text/90 hover:text-primary block font-medium transition-colors"
               >
                 Features
               </a>
               <a
                 href="#how-it-works"
-                className="block text-text/90 hover:text-primary transition-colors font-medium"
+                className="text-text/90 hover:text-primary block font-medium transition-colors"
               >
                 How It Works
               </a>
               <a
                 href="#about"
-                className="block text-text/90 hover:text-primary transition-colors font-medium"
+                className="text-text/90 hover:text-primary block font-medium transition-colors"
               >
                 About
               </a>
-              <button className="w-full bg-primary text-white px-6 py-2 rounded-lg font-medium">
+              <button className="bg-primary w-full rounded-lg px-6 py-2 font-medium text-white">
                 Get Started
               </button>
             </div>
@@ -115,93 +124,95 @@ export default function Home() {
         )}
       </nav>
 
-      <section className="pt-24 sm:pt-28 lg:pt-32 pb-14 sm:pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-2 bg-accent/30 text-text px-3 sm:px-4 py-2 rounded-full mb-5 sm:mb-6 font-medium text-xs sm:text-sm">
-              <Brain className="w-4 h-4" />
+      <section className="px-4 pt-24 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:px-8 lg:pt-32 lg:pb-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto mb-12 max-w-4xl text-center sm:mb-16">
+            <div className="bg-accent/30 text-text mb-5 inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium sm:mb-6 sm:px-4 sm:text-sm">
+              <Brain className="h-4 w-4" />
               <span>AI-Powered Healthcare Recommendations</span>
             </div>
 
-            <h1 className="text-5xl sm:text-4xl lg:text-7xl xl:text-8xl font-semibold mb-4 sm:mb-6 text-primary leading-tight text-balance">
+            <h1 className="text-primary mb-4 text-5xl leading-tight font-semibold text-balance sm:mb-6 sm:text-4xl lg:text-7xl xl:text-8xl">
               Find Your Perfect Healthcare Provider
             </h1>
 
-            <p className="text-sm sm:text-base lg:text-lg text-text/80 mb-6 sm:mb-8 leading-relaxed">
-              CSRP404 Thesis Project is a healthcare facility finder that helps you discover nearby
-              hospitals based on your location and specific medical service needs. Using machine
-              learning algorithm, we provide personalized recommendations ranked by relevance,
+            <p className="text-text/80 mb-6 text-sm leading-relaxed sm:mb-8 sm:text-base lg:text-lg">
+              CSRP404 Thesis Project is a healthcare facility finder that helps
+              you discover nearby hospitals based on your location and specific
+              medical service needs. Using machine learning algorithm, we
+              provide personalized recommendations ranked by relevance,
               distance, and service availability.
             </p>
 
-            <div className="bg-white border border-secondary/50 rounded-xl p-4 sm:p-6 mb-8 text-left max-w-2xl mx-auto">
-              <div className="flex gap-3 mb-4">
+            <div className="border-secondary/50 mx-auto mb-8 max-w-2xl rounded-xl border bg-white p-4 text-left sm:p-6">
+              <div className="mb-4 flex gap-3">
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <h4 className="text-base sm:text-lg font-semibold text-text">
+                  <div className="mb-2 flex items-center gap-2">
+                    <AlertCircle className="text-primary mt-0.5 h-5 w-5 shrink-0" />
+                    <h4 className="text-text text-base font-semibold sm:text-lg">
                       Current Coverage: Ermita, Manila
                     </h4>
                   </div>
                   <p className="text-text/80 text-sm">
-                    This application currently provides recommendations for healthcare facilities in
-                    Ermita, Manila. We&apos;re actively expanding our coverage to other areas.
-                    Location permission and at least one medical service selection are required to
+                    This application currently provides recommendations for
+                    healthcare facilities in Ermita, Manila. We&apos;re actively
+                    expanding our coverage to other areas. Location permission
+                    and at least one medical service selection are required to
                     use this application.
                   </p>
                 </div>
               </div>
-              <div className="grid sm:grid-cols-2 gap-3 text-sm text-text/90">
+              <div className="text-text/90 grid gap-3 text-sm sm:grid-cols-2">
                 <div className="flex gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckCircle2 className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                   <span>Up to 5 top-ranked results</span>
                 </div>
                 <div className="flex gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckCircle2 className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                   <span>ML-powered ranking system</span>
                 </div>
                 <div className="flex gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckCircle2 className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                   <span>Service filtering included</span>
                 </div>
                 <div className="flex gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <CheckCircle2 className="text-primary mt-0.5 h-4 w-4 shrink-0" />
                   <span>Distance-based matching</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center">
+            <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
               <Link
                 href="/search"
-                className="group w-full sm:w-auto bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:shadow-lg hover:brightness-95 transition-all duration-200 font-semibold flex items-center justify-center gap-2"
+                className="group bg-primary flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg hover:brightness-95 sm:w-auto sm:px-8 sm:py-4"
               >
                 Start Finding Providers
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <button
                 disabled
-                className="w-full sm:w-auto bg-white text-text px-6 sm:px-8 py-3 sm:py-4 rounded-xl border-2 border-secondary hover:border-primary hover:shadow-md transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-text border-secondary hover:border-primary w-full rounded-xl border-2 bg-white px-6 py-3 font-semibold transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-8 sm:py-4"
               >
                 Watch Demo
               </button>
             </div>
 
-            <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-center gap-4 sm:gap-8 text-sm text-text/80">
+            <div className="text-text/80 mt-10 flex flex-col items-start justify-center gap-4 text-sm sm:mt-12 sm:flex-row sm:flex-wrap sm:items-center sm:gap-8">
               <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-accent fill-accent" />
+                <Star className="text-accent fill-accent h-5 w-5" />
                 <span>
                   <strong className="text-text">20+</strong> Verified Providers
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
+                <Users className="text-primary h-5 w-5" />
                 <span>
                   <strong className="text-text">10+</strong> Happy Patients
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-secondary" />
+                <MapPin className="text-secondary h-5 w-5" />
                 <span>
                   <strong className="text-text">1</strong> City Covered
                 </span>
@@ -210,20 +221,20 @@ export default function Home() {
           </div>
 
           <div className="relative mt-12 sm:mt-16">
-            <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden border border-secondary/50">
-              <div className="bg-text px-4 py-3 flex items-center gap-2">
+            <div className="border-secondary/50 relative overflow-hidden rounded-2xl border bg-white shadow-lg">
+              <div className="bg-text flex items-center gap-2 px-4 py-3">
                 <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-primary"></div>
-                  <div className="w-3 h-3 rounded-full bg-accent"></div>
-                  <div className="w-3 h-3 rounded-full bg-secondary"></div>
+                  <div className="bg-primary h-3 w-3 rounded-full"></div>
+                  <div className="bg-accent h-3 w-3 rounded-full"></div>
+                  <div className="bg-secondary h-3 w-3 rounded-full"></div>
                 </div>
-                <div className="flex-1 text-center text-white/80 text-sm">
+                <div className="flex-1 text-center text-sm text-white/80">
                   HealthMatch AI Platform
                 </div>
               </div>
-              <div className="aspect-video bg-background flex items-center justify-center">
-                <div className="text-center p-4 sm:p-8">
-                  <Stethoscope className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-primary mx-auto mb-3 sm:mb-4" />
+              <div className="bg-background flex aspect-video items-center justify-center">
+                <div className="p-4 text-center sm:p-8">
+                  <Stethoscope className="text-primary mx-auto mb-3 h-16 w-16 sm:mb-4 sm:h-20 sm:w-20 lg:h-24 lg:w-24" />
                   <p className="text-text/80">Interactive Platform Preview</p>
                 </div>
               </div>
@@ -232,45 +243,48 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="features" className="py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-3 sm:mb-4 text-text">
+      <section
+        id="features"
+        className="px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 text-center sm:mb-12 lg:mb-16">
+            <h2 className="text-text mb-3 text-2xl font-semibold sm:mb-4 sm:text-3xl lg:text-4xl">
               How to Use the Project
             </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-text/80 max-w-2xl mx-auto">
+            <p className="text-text/80 mx-auto max-w-2xl text-sm sm:text-base lg:text-lg">
               Simple steps to find the best healthcare facilities near you
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+          <div className="grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             <FeatureCard
-              icon={<Brain className="w-8 h-8" />}
+              icon={<Brain className="h-8 w-8" />}
               title="Select Medical Services"
               description="Choose one or more medical services you need from the dropdown menu. Hold Ctrl (Windows/Linux) or Cmd (Mac) to select multiple services."
             />
             <FeatureCard
-              icon={<MapPin className="w-8 h-8" />}
+              icon={<MapPin className="h-8 w-8" />}
               title="Enable Location Access"
               description="Grant location permission to the application. We use your GPS data to find hospitals near you."
             />
             <FeatureCard
-              icon={<TrendingUp className="w-8 h-8" />}
+              icon={<TrendingUp className="h-8 w-8" />}
               title="Get ML-Ranked Results"
               description="Our machine learning algorithm analyze distance, service match, and other factors to rank up the 5 best healthcare facilities for you."
             />
             <FeatureCard
-              icon={<Shield className="w-8 h-8" />}
+              icon={<Shield className="h-8 w-8" />}
               title="View Interactive Map"
               description="See your location (blue marker) and recommended hospitals (red markers) on an interactive map. Click markers for more details."
             />
             <FeatureCard
-              icon={<Clock className="w-8 h-8" />}
+              icon={<Clock className="h-8 w-8" />}
               title="Review Hospital Details"
               description="Access comprehensive information including address, distance, phone number, operating hours, services, and insurance coverage."
             />
             <FeatureCard
-              icon={<Users className="w-8 h-8" />}
+              icon={<Users className="h-8 w-8" />}
               title="Compare Insurance Options"
               description="See available insurance coverage including PhilHealth, HMO plans, and other providers accepted at each facility."
             />
@@ -278,18 +292,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="how-it-works" className="py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-3 sm:mb-4 text-text">
+      <section
+        id="how-it-works"
+        className="px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 text-center sm:mb-12 lg:mb-16">
+            <h2 className="text-text mb-3 text-2xl font-semibold sm:mb-4 sm:text-3xl lg:text-4xl">
               Understanding Your Results
             </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-text/80 max-w-2xl mx-auto">
+            <p className="text-text/80 mx-auto max-w-2xl text-sm sm:text-base lg:text-lg">
               What you&apos;ll see after your search
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
             <StepCard
               number="1"
               title="Hospital Information"
@@ -311,43 +328,47 @@ export default function Home() {
 
       <section
         id="about"
-        className="py-14 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-primary/80 text-white"
+        className="bg-primary/80 px-4 py-14 text-white sm:px-6 sm:py-16 lg:px-8 lg:py-20"
       >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold mb-4 sm:mb-6 text-white/90">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="mb-4 text-2xl font-semibold text-white/90 sm:mb-6 sm:text-3xl lg:text-4xl">
             Ready to Find Your Perfect Healthcare Match?
           </h2>
-          <p className="text-sm sm:text-base lg:text-lg mb-6 sm:mb-8 text-white/90">
-            Join thousands of patients who have found better healthcare through intelligent
-            recommendations.
+          <p className="mb-6 text-sm text-white/90 sm:mb-8 sm:text-base lg:text-lg">
+            Join thousands of patients who have found better healthcare through
+            intelligent recommendations.
           </p>
           <Link
             href="#"
-            className="inline-flex w-full sm:w-auto items-center justify-center bg-white text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:shadow-lg hover:brightness-95 transition-all duration-200 font-semibold hover:text-primary/80"
+            className="text-primary hover:text-primary/80 inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3 font-semibold transition-all duration-200 hover:shadow-lg hover:brightness-95 sm:w-auto sm:px-8 sm:py-4"
           >
             Get Started for Free
           </Link>
         </div>
       </section>
 
-      <footer className="bg-text text-white/80 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+      <footer className="bg-text px-4 py-12 text-white/80 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 grid gap-8 md:grid-cols-4">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="bg-primary p-2 rounded-lg">
-                  <Heart className="w-5 h-5 text-white" />
+              <div className="mb-4 flex items-center gap-2">
+                <div className="bg-primary rounded-lg p-2">
+                  <Heart className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-lg font-bold text-white">CSRP404 Thesis Project</span>
+                <span className="text-lg font-bold text-white">
+                  CSRP404 Thesis Project
+                </span>
               </div>
               <p className="text-sm text-white/70">
-                Connecting patients with the best healthcare providers through AI-powered
-                recommendations.
+                Connecting patients with the best healthcare providers through
+                AI-powered recommendations.
               </p>
             </div>
 
             <div>
-              <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Product</h3>
+              <h3 className="mb-3 text-base font-semibold text-white sm:text-lg">
+                Product
+              </h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
@@ -368,7 +389,9 @@ export default function Home() {
             </div>
 
             <div>
-              <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Company</h3>
+              <h3 className="mb-3 text-base font-semibold text-white sm:text-lg">
+                Company
+              </h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
@@ -389,7 +412,9 @@ export default function Home() {
             </div>
 
             <div>
-              <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Legal</h3>
+              <h3 className="mb-3 text-base font-semibold text-white sm:text-lg">
+                Legal
+              </h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
