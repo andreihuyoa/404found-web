@@ -1,35 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import type {
-  RecommendationRequest,
-  RecommendationResponse,
-} from "@/lib/types";
-import { getRecommendations } from "@/lib/api/recommendations";
-import { toTitleCase } from "@/lib/utils/text";
-import { getServices } from "@/lib/api/services";
 import {
-  HEALTH_SERVICES,
-  type HealthService,
-} from "@/domain/types/services.types";
-
-import MapboxSection from "../../components/MapboxSection";
-import Tooltip from "../../components/ui/Tooltip";
-import {
-  ArrowLeft,
   Clock,
+  ListFilter,
   Loader,
   MapPin,
   Phone,
   Search,
   X,
 } from "lucide-react";
-import Link from "next/link";
 
-export default function SearchPage() {
+import { getRecommendations } from "@/lib/api/recommendations";
+import { getServices } from "@/lib/api/services";
+import type {
+  RecommendationRequest,
+  RecommendationResponse,
+} from "@/lib/types";
+import { toTitleCase } from "@/lib/utils/text";
+import {
+  HEALTH_SERVICES,
+  type HealthService,
+} from "@/domain/types/services.types";
+
+import MapboxSection from "./MapboxSection";
+import Tooltip from "./ui/Tooltip";
+
+export default function SearchExperience() {
   const [selectedServices, setSelectedServices] = useState<HealthService[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isServicesOpen, setIsServicesOpen] = useState(true);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [recommendations, setRecommendations] =
     useState<RecommendationResponse | null>(null);
@@ -38,8 +38,6 @@ export default function SearchPage() {
   >(undefined);
 
   useEffect(() => {
-    // Services are statically defined in HEALTH_SERVICES; just unblock loading.
-    // getServices() is still called to validate the API is reachable.
     async function fetchServices() {
       try {
         await getServices();
@@ -73,11 +71,9 @@ export default function SearchPage() {
         }
       };
 
-      // First attempt with high accuracy
       navigator.geolocation.getCurrentPosition(
         resolve,
         (error) => {
-          // If timeout or position unavailable, retry with lower accuracy
           if (
             error.code === GeolocationPositionError.TIMEOUT ||
             error.code === GeolocationPositionError.POSITION_UNAVAILABLE
@@ -88,18 +84,15 @@ export default function SearchPage() {
 
             navigator.geolocation.getCurrentPosition(
               resolve,
-              (fallbackError) => {
-                // Fallback also failed, return appropriate error
-                reject(new Error(getErrorMessage(fallbackError)));
-              },
+              (fallbackError) =>
+                reject(new Error(getErrorMessage(fallbackError))),
               {
                 enableHighAccuracy: false,
                 timeout: 10000,
-                maximumAge: 60000, // Accept cached position up to 1 minute old
+                maximumAge: 60000,
               },
             );
           } else {
-            // Permission denied or other error - don't retry
             reject(new Error(getErrorMessage(error)));
           }
         },
@@ -126,11 +119,8 @@ export default function SearchPage() {
       setRecommendations(null);
 
       const position = await getLocation();
-      const { latitude, longitude, accuracy } = position.coords;
-      // console.log("Location:", { latitude, longitude, accuracy });
-      // console.log("Selected services:", selectedServices);
+      const { latitude, longitude } = position.coords;
 
-      // Store user location for map
       setUserLocation({ latitude, longitude });
 
       const request: RecommendationRequest = {
@@ -140,13 +130,8 @@ export default function SearchPage() {
         top_n: 5,
         use_ml: true,
       };
-      // console.log("Sending request to ML worker:", request);
 
-      const result = await getRecommendations(request);
-      // console.log("Recommendations received:", result);
-      // console.log(`Found ${result.recommendations.length} hospitals`);
-
-      setRecommendations(result);
+      setRecommendations(await getRecommendations(request));
     } catch (error) {
       console.error("Error getting location or recommendations:", error);
       alert(
@@ -163,16 +148,14 @@ export default function SearchPage() {
   const handleServiceChange = (service: HealthService) => {
     setSelectedServices((prev) =>
       prev.includes(service)
-        ? prev.filter((s) => s !== service)
+        ? prev.filter((selectedService) => selectedService !== service)
         : [...prev, service],
     );
   };
 
   const formatDistance = (distance?: number): string => {
     if (!distance) return "N/A";
-    if (distance < 1000) {
-      return `${Math.round(distance)}m`;
-    }
+    if (distance < 1000) return `${Math.round(distance)}m`;
     return `${(distance / 1000).toFixed(2)}km`;
   };
 
@@ -180,140 +163,158 @@ export default function SearchPage() {
     hospital: RecommendationResponse["recommendations"][number],
   ): HealthService[] => {
     if (Array.isArray(hospital.services)) {
-      // Cast is safe: the API contract guarantees values match HealthService.
       return hospital.services as HealthService[];
     }
+
     return [];
   };
 
   return (
-    <div className="bg-background dark:bg-foreground flex min-h-screen cursor-default flex-col lg:h-screen lg:overflow-hidden">
-      {/* Navigation — no extra padding per requirement */}
-      <header className="border-text/10 shrink-0 border-b bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-12 items-center justify-between sm:h-16">
-            <Link
-              href="/"
-              className="text-text hover:text-primary flex w-16 shrink-0 items-center gap-1.5 transition-colors sm:w-20 sm:gap-2"
+    <div className="bg-background flex h-full min-h-0 cursor-default flex-col overflow-hidden">
+      <div className="border-text/10 shrink-0 border-b bg-white px-4 py-3 shadow-sm sm:px-6">
+        <p className="text-primary text-center font-serif text-xl font-bold sm:text-3xl">
+          Find Healthcare Providers
+        </p>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 sm:gap-4 sm:p-4 lg:flex-row lg:overflow-hidden">
+        <div className="min-h-[min(600px,calc(100svh-8rem))] flex-1 lg:min-h-0">
+          <div className="relative h-full min-h-[min(600px,calc(100svh-8rem))] overflow-hidden rounded-xl shadow-sm lg:min-h-0">
+            <div
+              aria-hidden={!isServicesOpen}
+              inert={!isServicesOpen}
+              className={`absolute top-3 right-3 left-3 z-10 max-h-[calc(100%-7.5rem)] overflow-y-auto rounded-xl bg-white p-4 shadow-sm transition-[opacity,transform] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:top-4 sm:right-auto sm:left-4 sm:max-h-[calc(100%-2rem)] sm:w-80 xl:w-96 ${
+                isServicesOpen
+                  ? "translate-y-0 opacity-100"
+                  : "pointer-events-none -translate-y-[calc(100%+1rem)] opacity-95"
+              }`}
             >
-              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="text-sm font-medium sm:text-base">Back</span>
-            </Link>
-            <p className="text-primary min-w-0 flex-1 cursor-default px-2 text-center font-serif text-xl font-bold sm:text-4xl">
-              Find Healthcare Providers
-            </p>
-            <div className="w-16 shrink-0 sm:w-20" />
-          </div>
-        </div>
-      </header>
-
-      <div className="flex flex-1 flex-col gap-4 p-4 lg:flex-row lg:overflow-hidden">
-        {/* Left — Service selection panel */}
-        <div className="w-full shrink-0 lg:w-96 lg:self-center xl:w-125">
-          <div className="rounded-xl bg-white p-4 shadow-sm dark:bg-zinc-900">
-            <h2 className="text-text mb-1 text-base font-bold">
-              Select Medical Services
-            </h2>
-            <p className="text-text/70 mb-3 text-xs">Check services you need</p>
-
-            <div className="max-h-48 overflow-y-auto lg:max-h-none lg:overflow-visible">
-              {HEALTH_SERVICES.map((service) => (
-                <label
-                  key={service}
-                  className="hover:bg-primary/5 flex cursor-pointer items-center gap-2 rounded px-2 py-1 transition-colors"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedServices.includes(service)}
-                    onChange={() => handleServiceChange(service)}
-                    className="accent-primary h-3.5 w-3.5 shrink-0 cursor-pointer"
-                  />
-                  <span className="text-text flex-1 text-sm">{service}</span>
-                </label>
-              ))}
-            </div>
-
-            {/* Selected services summary */}
-            <div className="bg-primary/5 mt-4 rounded-lg p-3">
-              <p className="text-text mb-2 text-xs font-medium">
-                Selected: <strong>{selectedServices.length}</strong>
-              </p>
-              {selectedServices.length > 0 ? (
-                <div className="flex flex-wrap gap-1">
-                  {selectedServices.map((svc) => (
-                    <span
-                      key={svc}
-                      className="bg-primary inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs text-white"
-                    >
-                      {svc}
-                      <button
-                        onClick={() => handleServiceChange(svc)}
-                        className="hover:text-white/70"
-                      >
-                        <X className="h-3 w-3 cursor-pointer" />
-                      </button>
-                    </span>
-                  ))}
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-text mb-1 text-base font-bold">
+                    Select Medical Services
+                  </h2>
+                  <p className="text-text/70 text-xs">
+                    Check services you need
+                  </p>
                 </div>
-              ) : (
-                <p className="text-text/70 text-xs">No services selected</p>
-              )}
-            </div>
-
-            {locationError && (
-              <div className="mt-3 rounded-lg border border-red-200/20 bg-red-500/10 p-3">
-                <p className="text-xs font-medium text-red-700">
-                  {locationError}
-                </p>
+                <button
+                  type="button"
+                  aria-label="Close medical services"
+                  onClick={() => setIsServicesOpen(false)}
+                  className="text-text/70 hover:text-primary rounded-lg p-1 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-            )}
+
+              <div className="max-h-48 overflow-y-auto">
+                {HEALTH_SERVICES.map((service) => (
+                  <label
+                    key={service}
+                    className="hover:bg-primary/5 flex cursor-pointer items-center gap-2 rounded px-2 py-1 transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedServices.includes(service)}
+                      onChange={() => handleServiceChange(service)}
+                      className="accent-primary h-3.5 w-3.5 shrink-0 cursor-pointer"
+                    />
+                    <span className="text-text flex-1 text-sm">{service}</span>
+                  </label>
+                ))}
+              </div>
+
+              <div className="bg-primary/5 mt-4 rounded-lg p-3">
+                <p className="text-text mb-2 text-xs font-medium">
+                  Selected: <strong>{selectedServices.length}</strong>
+                </p>
+                {selectedServices.length > 0 ? (
+                  <div className="flex flex-wrap gap-1">
+                    {selectedServices.map((service) => (
+                      <span
+                        key={service}
+                        className="bg-primary inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs text-white"
+                      >
+                        {service}
+                        <button
+                          onClick={() => handleServiceChange(service)}
+                          className="hover:text-white/70"
+                        >
+                          <X className="h-3 w-3 cursor-pointer" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-text/70 text-xs">No services selected</p>
+                )}
+              </div>
+
+              {locationError && (
+                <div className="mt-3 rounded-lg border border-red-200/20 bg-red-500/10 p-3">
+                  <p className="text-xs font-medium text-red-700">
+                    {locationError}
+                  </p>
+                </div>
+              )}
+
+              <button
+                onClick={handleSearch}
+                disabled={isLoading || selectedServices.length === 0}
+                className="bg-primary mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader className="h-4 w-4 animate-spin" />
+                    Searching...
+                  </>
+                ) : (
+                  <>
+                    <Search className="h-4 w-4" />
+                    Search Hospitals
+                  </>
+                )}
+              </button>
+            </div>
 
             <button
-              onClick={handleSearch}
-              disabled={isLoading || selectedServices.length === 0}
-              className="bg-primary mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+              type="button"
+              aria-expanded={isServicesOpen}
+              onClick={() => setIsServicesOpen(true)}
+              className={`text-text hover:text-primary absolute top-3 left-3 z-10 flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-semibold shadow-sm transition-[opacity,transform,color] duration-300 ease-out motion-reduce:transition-none sm:top-4 sm:left-4 ${
+                isServicesOpen
+                  ? "pointer-events-none -translate-y-2 opacity-0"
+                  : "translate-y-0 opacity-100"
+              }`}
             >
-              {isLoading ? (
-                <>
-                  <Loader className="h-4 w-4 animate-spin" />
-                  Searching...
-                </>
-              ) : (
-                <>
-                  <Search className="h-4 w-4" />
-                  Search Hospitals
-                </>
-              )}
+              <ListFilter className="h-4 w-4" />
+              Select Services
             </button>
 
-            <div className="border-secondary/30 bg-secondary/10 mt-3 rounded-lg border p-3">
-              <p className="text-text/70 text-xs">
-                <strong>Note:</strong> This demo shows hospitals in Ermita,
-                Manila. Location access will be requested when you search.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* MIDDLE — Map (always visible; fixed height on mobile, fills remaining height on desktop) */}
-        <div className="min-h-[320px] flex-1 lg:min-h-0">
-          <div className="h-[320px] overflow-hidden rounded-xl shadow-sm lg:h-full">
             <MapboxSection
               userLocation={userLocation}
               recommendations={recommendations?.recommendations}
               zoomLevel={14}
-              showBoundary={true}
+              showBoundary
             />
+
+            <div className="border-secondary/30 bg-secondary/10 absolute right-3 bottom-3 left-3 z-10 rounded-lg border bg-white/95 p-3 shadow-sm backdrop-blur-sm sm:right-4 sm:bottom-4 sm:left-auto sm:max-w-72">
+              <p className="text-text/70 text-xs">
+                <strong>Note:</strong> This demo shows hospitals in{" "}
+                <strong>Ermita, Manila</strong>. Location access will be
+                requested when you search.
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Right — Recommendations */}
         {recommendations && (
-          <div className="w-full shrink-0 lg:w-96 lg:overflow-y-auto xl:w-125">
-            <div className="rounded-xl bg-white p-4 shadow-sm lg:h-full lg:overflow-y-auto dark:bg-zinc-800">
+          <div className="w-full shrink-0 lg:w-80 lg:overflow-y-auto xl:w-96">
+            <div className="rounded-xl bg-white p-4 shadow-sm lg:h-full lg:overflow-y-auto">
               <div className="mb-4">
                 <h2 className="text-base font-bold">Recommended Hospitals</h2>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-text/60 text-xs">
                   Found {recommendations.count} hospital
                   {recommendations.count !== 1 ? "s" : ""} · Ranked by
                   relevance, distance, and service match
@@ -321,7 +322,7 @@ export default function SearchPage() {
               </div>
 
               {recommendations.recommendations.length === 0 ? (
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="text-text/70 text-sm">
                   No hospitals found for the given criteria.
                 </p>
               ) : (
@@ -410,14 +411,21 @@ export default function SearchPage() {
                             <div className="flex flex-wrap gap-1">
                               {[...serviceFields]
                                 .sort((a, b) => {
-                                  const aSel = selectedServices.includes(a);
-                                  const bSel = selectedServices.includes(b);
-                                  if (aSel === bSel) return a.localeCompare(b);
-                                  return aSel ? -1 : 1;
+                                  const aSelected =
+                                    selectedServices.includes(a);
+                                  const bSelected =
+                                    selectedServices.includes(b);
+
+                                  if (aSelected === bSelected) {
+                                    return a.localeCompare(b);
+                                  }
+
+                                  return aSelected ? -1 : 1;
                                 })
                                 .map((service) => {
                                   const isSelected =
                                     selectedServices.includes(service);
+
                                   return (
                                     <span
                                       key={service}

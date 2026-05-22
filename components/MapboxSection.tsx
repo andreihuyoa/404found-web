@@ -239,11 +239,10 @@ export default function MapboxSection({
   }, []);
 
   return (
-    <div className="h-full min-h-[400px] w-full overflow-hidden rounded-lg shadow-lg">
+    <div className="relative h-full min-h-[320px] w-full overflow-hidden rounded-lg shadow-lg sm:min-h-[400px]">
       <div
         ref={mapContainerRef}
-        className="h-full min-h-[400px] w-full"
-        style={{ minHeight: "400px" }}
+        className="h-full min-h-[320px] w-full sm:min-h-[400px]"
       />
       {!mapboxgl.accessToken && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-600">

@@ -8,9 +8,9 @@ gsap.registerPlugin(ScrollToPlugin);
 
 import StepCard from "../components/ui/StepCard";
 import FeatureCard from "../components/ui/FeatureCard";
+import SearchExperience from "../components/SearchExperience";
 
 import {
-  Stethoscope,
   Brain,
   Shield,
   Clock,
@@ -25,7 +25,6 @@ import {
   AlertCircle,
   CheckCircle2,
 } from "lucide-react";
-import Link from "next/link";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -124,7 +123,7 @@ export default function Home() {
                 <Heart className="h-6 w-6 text-white" />
               </div>
               <span className="text-primary truncate text-base font-semibold sm:text-lg md:text-xl">
-                CSRP404 Thesis Project
+                Hilom
               </span>
             </button>
 
@@ -150,13 +149,13 @@ export default function Home() {
               >
                 About
               </a>
-              <Link
-                href="/search"
+              <a
+                href="#demo"
                 className="bg-primary rounded-lg px-6 py-2 font-medium text-white transition-all duration-200 hover:shadow-md hover:brightness-95"
-                onClick={(e) => animatePress(e.currentTarget)}
+                onClick={scrollToSection("#demo")}
               >
                 Try The Demo
-              </Link>
+              </a>
             </div>
 
             <button
@@ -203,9 +202,16 @@ export default function Home() {
             </a>
             <button
               className="bg-primary w-full rounded-lg px-6 py-2 font-medium text-white"
-              onClick={(e) => animatePress(e.currentTarget)}
+              onClick={() => {
+                setIsMenuOpen(false);
+                gsap.to(window, {
+                  duration: 0.9,
+                  scrollTo: { y: "#demo", offsetY: 72 },
+                  ease: "power3.inOut",
+                });
+              }}
             >
-              Get Started
+              Try The Demo
             </button>
           </div>
         </div>
@@ -224,11 +230,13 @@ export default function Home() {
             </h1>
 
             <p className="text-text/80 mb-6 text-sm leading-relaxed sm:mb-8 sm:text-base lg:text-lg">
-              CSRP404 Thesis Project is a healthcare facility finder that helps
-              you discover nearby hospitals based on your location and specific
-              medical service needs. Using machine learning algorithm, we
-              provide personalized recommendations ranked by relevance,
-              distance, and service availability.
+              Hilom is a thesis project, a healthcare facility finder that helps
+              Filipinos discover nearby hospitals based on their medical service
+              needs. Using a model we developed that combines machine learning
+              with other algorithms, Hilom provides personalized recommendations
+              ranked by professional expertise, medical services offered, and
+              relevance, distance, and other factors to help you find the best
+              healthcare provider near you.
             </p>
 
             <div className="border-secondary/50 mx-auto mb-8 max-w-2xl rounded-xl border bg-white p-4 text-left sm:p-6">
@@ -240,12 +248,13 @@ export default function Home() {
                       Current Coverage: Ermita, Manila
                     </h4>
                   </div>
-                  <p className="text-text/80 text-sm">
+                  <p className="text-text/80 text-xs">
                     This application currently provides recommendations for
-                    healthcare facilities in Ermita, Manila. We&apos;re actively
-                    expanding our coverage to other areas. Location permission
+                    healthcare facilities in Ermita, Manila. Location permission
                     and at least one medical service selection are required to
                     use this application.
+                    {/* We&apos;re actively expanding our
+                    coverage to other areas. */}
                   </p>
                 </div>
               </div>
@@ -270,13 +279,14 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <Link
-                href="/search"
+              <a
+                href="#demo"
                 className="group bg-primary flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg hover:brightness-95 sm:w-auto sm:px-8 sm:py-4"
+                onClick={scrollToSection("#demo")}
               >
                 Start Finding Providers
                 <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </a>
               <button
                 disabled
                 className="text-text border-secondary hover:border-primary w-full rounded-xl border-2 bg-white px-6 py-3 font-semibold transition-all duration-200 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-8 sm:py-4"
@@ -308,7 +318,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative mt-12 sm:mt-16">
+          <div id="demo" className="relative mt-12 scroll-mt-24 sm:mt-16">
             <div className="border-secondary/50 relative overflow-hidden rounded-2xl border bg-white shadow-lg">
               <div className="bg-text flex items-center gap-2 px-4 py-3">
                 <div className="flex gap-2">
@@ -317,14 +327,11 @@ export default function Home() {
                   <div className="bg-secondary h-3 w-3 rounded-full"></div>
                 </div>
                 <div className="flex-1 text-center text-sm text-white/80">
-                  HealthMatch AI Platform
+                  Try the demo
                 </div>
               </div>
-              <div className="bg-background flex aspect-video items-center justify-center">
-                <div className="p-4 text-center sm:p-8">
-                  <Stethoscope className="text-primary mx-auto mb-3 h-16 w-16 sm:mb-4 sm:h-20 sm:w-20 lg:h-24 lg:w-24" />
-                  <p className="text-text/80">Interactive Platform Preview</p>
-                </div>
+              <div className="bg-background h-[min(860px,calc(100svh-1.5rem))] min-h-[640px] overflow-hidden sm:min-h-[700px] lg:aspect-video lg:h-auto lg:min-h-[680px]">
+                <SearchExperience />
               </div>
             </div>
           </div>
@@ -426,12 +433,12 @@ export default function Home() {
             Join thousands of patients who have found better healthcare through
             intelligent recommendations.
           </p>
-          <Link
+          <a
             href="#"
             className="text-primary hover:text-primary/80 inline-flex w-full items-center justify-center rounded-xl bg-white px-6 py-3 font-semibold transition-all duration-200 hover:shadow-lg hover:brightness-95 sm:w-auto sm:px-8 sm:py-4"
           >
             Get Started for Free
-          </Link>
+          </a>
         </div>
       </section>
 
@@ -443,9 +450,7 @@ export default function Home() {
                 <div className="bg-primary rounded-lg p-2">
                   <Heart className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-lg font-bold text-white">
-                  CSRP404 Thesis Project
-                </span>
+                <span className="text-lg font-bold text-white">Hilom</span>
               </div>
               <p className="text-sm text-white/70">
                 Connecting patients with the best healthcare providers through
