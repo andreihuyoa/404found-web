@@ -48,7 +48,11 @@ export function validateRecommendationRequest(request: unknown): {
     return { isValid: false, error: "At least one service must be provided" };
   }
 
-  if (!req.services.every((service) => typeof service === "string" && service.trim().length > 0)) {
+  if (
+    !req.services.every(
+      (service) => typeof service === "string" && service.trim().length > 0,
+    )
+  ) {
     return { isValid: false, error: "All services must be non-empty strings" };
   }
 
@@ -74,7 +78,7 @@ export function validateRecommendationRequest(request: unknown): {
  * Assumes validation has already passed
  */
 export function normalizeRecommendationRequest(
-  request: Record<string, unknown>
+  request: Record<string, unknown>,
 ): RecommendationRequest {
   return {
     latitude: request.latitude as number,

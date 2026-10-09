@@ -1,11 +1,16 @@
 import useSWR from "swr";
 import { getRecommendations } from "../../api/recommendations";
-import type { RecommendationRequest, RecommendationResponse } from "../../types";
+import type {
+  RecommendationRequest,
+  RecommendationResponse,
+} from "../../types";
 
 /**
  * SWR key generator for recommendation requests
  */
-function getRecommendationKey(request: RecommendationRequest | null): string | null {
+function getRecommendationKey(
+  request: RecommendationRequest | null,
+): string | null {
   if (!request) return null;
   return JSON.stringify({
     latitude: request.latitude,
@@ -28,7 +33,7 @@ export function useRecommendations(
     revalidateOnFocus?: boolean;
     revalidateOnReconnect?: boolean;
     refreshInterval?: number;
-  }
+  },
 ) {
   const key = getRecommendationKey(request);
 
@@ -44,7 +49,7 @@ export function useRecommendations(
       revalidateOnFocus: options?.revalidateOnFocus ?? false,
       revalidateOnReconnect: options?.revalidateOnReconnect ?? true,
       refreshInterval: options?.refreshInterval,
-    }
+    },
   );
 
   return {

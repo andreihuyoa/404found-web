@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
           error: "Invalid JSON in request body",
           code: "INVALID_JSON",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
           error: validation.error,
           code: "VALIDATION_ERROR",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         error: apiError.message || "Internal server error",
         code: statusCode >= 500 ? "INTERNAL_ERROR" : "API_ERROR",
       },
-      { status: statusCode }
+      { status: statusCode },
     );
   }
 }

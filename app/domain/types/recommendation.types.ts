@@ -44,7 +44,7 @@ export class RecommendationError extends Error {
   constructor(
     message: string,
     public readonly statusCode: number = 500,
-    public readonly code?: string
+    public readonly code?: string,
   ) {
     super(message);
     this.name = "RecommendationError";
@@ -59,7 +59,11 @@ export class ValidationError extends RecommendationError {
 }
 
 export class ApiError extends RecommendationError {
-  constructor(message: string, statusCode: number = 500, public readonly originalError?: unknown) {
+  constructor(
+    message: string,
+    statusCode: number = 500,
+    public readonly originalError?: unknown,
+  ) {
     super(message, statusCode, "API_ERROR");
     this.name = "ApiError";
   }
