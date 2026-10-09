@@ -43,3 +43,7 @@ next-env.d.ts
 # ide deps
 .vscode
 .cursor
+
+# macOS metadata files
+.DS_Store
+._*
