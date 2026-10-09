@@ -1,0 +1,152 @@
+{
+  "features": [
+    {
+      "id": "check-harness",
+      "priority": 1,
+      "area": "tooling",
+      "title": "One-command check: lint, typecheck, format, build",
+      "user_visible_behavior": "`npm run check` runs ESLint, tsc --noEmit, Prettier check, and next build. CI runs the same command. A Claude Code Stop hook runs it whenever files changed.",
+      "status": "passing",
+      "verification": [
+        "npm run check",
+        "Pipe-test .claude/hooks/check-on-stop.sh: passing check exits 0, failing check exits 2"
+      ],
+      "evidence": "2026-10-09: npm run check green (lint clean, tsc clean, Prettier clean, build produced /, /_not-found, /api/recommend). Hook: passing 0, failing 2.",
+      "notes": "macOS ._* files (exFAT drive) are ignored by ESLint and Prettier. One-time Prettier pass on 7 files, formatting only."
+    },
+    {
+      "id": "agent-harness-files",
+      "priority": 2,
+      "area": "tooling",
+      "title": "Long-running agent harness files",
+      "user_visible_behavior": "AGENTS.md (CLAUDE.md imports it), feature_list.json, claude-progress.md, and init.sh let any new session pick up where the last one stopped.",
+      "status": "passing",
+      "verification": [
+        "./init.sh",
+        "python3 -m json.tool feature_list.json > /dev/null"
+      ],
+      "evidence": "2026-10-09: files added; init.sh passed; feature_list.json is valid JSON.",
+      "notes": "Replaces TODO.md."
+    },
+    {
+      "id": "design-system-setup",
+      "priority": 3,
+      "area": "design",
+      "title": "Design tokens and type from the chosen design system",
+      "user_visible_behavior": "Color, type, spacing, and radius tokens from the chosen system, with light and dark modes. Fonts have real weights (no fake-bold headings).",
+      "status": "blocked",
+      "verification": [
+        "./init.sh",
+        "Manual (browser at localhost:3000): every color comes from a token; headings render with a real font weight; light and dark both readable"
+      ],
+      "evidence": "",
+      "notes": "Blocked on Andrei choosing a design system and sharing visual inspiration. Current headings fake-bold Instrument Serif (only ships at weight 400)."
+    },
+    {
+      "id": "landing-rework",
+      "priority": 4,
+      "area": "design",
+      "title": "Lead with the map demo and tell the truth",
+      "user_visible_behavior": "The page opens on the search map. One accurate 'How it ranks' section replaces the 6 feature cards and 3 step cards. A thesis footer (authors, institution, year, paper, repos, data source) replaces the SaaS footer. No invented stats, dead links, or fake window chrome.",
+      "status": "blocked",
+      "verification": [
+        "./init.sh",
+        "Manual (browser): no invented numbers; every link resolves; copy matches the UI and the actual ranking method"
+      ],
+      "evidence": "",
+      "notes": "Blocked on design-system-setup. Resolves F1 (invented stats, page.tsx:302-316, :433), F2 (dead CTAs and footer links), F3 (HIPAA/Pricing/Careers links), F4 (copy contradicts UI: Ctrl/Cmd, 'blue', 'professional expertise'), F5 (mismatched icons), F7 (hero shrinks at sm), F11 (fake macOS dots)."
+    },
+    {
+      "id": "search-results-ux",
+      "priority": 5,
+      "area": "design",
+      "title": "Redesign the service picker, map, and result cards",
+      "user_visible_behavior": "Result cards show rank and distance prominently and which requested services match; insurance is collapsed; badges are readable. The map doesn't trap page scroll. Loading, empty, error, and cold-start states are clear (no alert()). The button doesn't say 'Searching…' before a search.",
+      "status": "blocked",
+      "verification": [
+        "./init.sh",
+        "Manual (browser): search with the API mocked or live; scroll past the map without zooming it; trigger empty and error states; check badge contrast"
+      ],
+      "evidence": "",
+      "notes": "Blocked on design-system-setup. Resolves F6 (low-contrast badges, SearchExperience.tsx:359-372), F8 (map scroll trap; use cooperativeGestures), F9 ('Searching…' on load, SearchExperience.tsx:31, :267), F10 (0 m shows N/A, SearchExperience.tsx:157)."
+    },
+    {
+      "id": "responsive-a11y",
+      "priority": 6,
+      "area": "design",
+      "title": "Responsive and accessibility pass",
+      "user_visible_behavior": "Works at phone, tablet, and desktop widths; meets contrast, focus, keyboard, label, and reduced-motion basics. GSAP animations kept only where they serve the design.",
+      "status": "blocked",
+      "verification": [
+        "./init.sh",
+        "Manual (browser): check at 375px, 768px, and desktop; tab through the search flow; enable reduced motion"
+      ],
+      "evidence": "",
+      "notes": "Blocked on the redesign entries above."
+    },
+    {
+      "id": "services-from-api",
+      "priority": 7,
+      "area": "code",
+      "title": "Render services from the API",
+      "user_visible_behavior": "The service picker lists what /csrp/services returns instead of a hardcoded list.",
+      "status": "not_started",
+      "verification": [
+        "./init.sh",
+        "Manual (browser): picker shows the API's services; removing one in a mocked response removes it from the picker"
+      ],
+      "evidence": "",
+      "notes": "Pairs with backend services-single-source. Today getServices() is called and its result discarded."
+    },
+    {
+      "id": "code-cleanup",
+      "priority": 8,
+      "area": "code",
+      "title": "Remove dead request fields and routes; fix metadata",
+      "user_visible_behavior": "No unused use_ml field; app/api/recommend/route.ts deleted or actually used; page title and metadata say Hilom.",
+      "status": "not_started",
+      "verification": ["./init.sh"],
+      "evidence": "",
+      "notes": "The client calls the Render API directly, so the Next route is unused."
+    },
+    {
+      "id": "api-contract-sync",
+      "priority": 9,
+      "area": "code",
+      "title": "Follow backend API changes",
+      "user_visible_behavior": "The frontend works against the FastAPI backend: same results, new error format ({error, code}), 422 validation errors handled.",
+      "status": "blocked",
+      "verification": [
+        "./init.sh",
+        "Manual (browser) against a local backend (make run in 404found-model)"
+      ],
+      "evidence": "",
+      "notes": "Blocked on backend fastapi-migration and model-lifecycle. If the /csrp prefix is renamed, update here too."
+    },
+    {
+      "id": "naming-and-readme",
+      "priority": 10,
+      "area": "docs",
+      "title": "Rename to Hilom and rewrite the README",
+      "user_visible_behavior": "Package and titles say Hilom. README covers: what it is, live link, screenshots, stack, env vars (NEXT_PUBLIC_MODEL_BASE_API_URL, NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN), links to the API repo and thesis.",
+      "status": "not_started",
+      "verification": [
+        "./init.sh",
+        "Follow the README setup from a fresh clone; it works as written"
+      ],
+      "evidence": "",
+      "notes": "Name decided: Hilom. Package is currently csrp-web; README is create-next-app boilerplate."
+    },
+    {
+      "id": "ui-tests",
+      "priority": 11,
+      "area": "tooling",
+      "title": "UI tests after the redesign",
+      "user_visible_behavior": "A Playwright smoke test (mocked API) covers: pick a service, search, see ranked results. Added to npm run check.",
+      "status": "blocked",
+      "verification": ["npm run check"],
+      "evidence": "",
+      "notes": "Blocked on the redesign so tests aren't written against the old UI."
+    }
+  ]
+}
