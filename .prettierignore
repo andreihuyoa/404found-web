@@ -1,0 +1,5 @@
+# macOS metadata files on the exFAT project drive
+._*
+
+# Large data file
+public/ermita.geojson
