@@ -15,5 +15,8 @@ fi
 echo "==> npm run check"
 npm run check
 
+echo "==> status"
+node scripts/status.mjs
+
 echo "==> init.sh passed."
 echo "Run the selected feature's own verification steps (including browser checks) before marking it passing."

@@ -10,13 +10,13 @@ session can continue without guessing, with real evidence behind every "done".
 
 ## Session start (in order, every session)
 
-1. `pwd`
-2. Read `claude-progress.md` (latest state and next step).
-3. Read `feature_list.json`; pick the **single** highest-priority entry with status
-   `not_started` or `in_progress`. Skip `blocked` unless Andrei resolved the blocker
-   in this session.
-4. `git log --oneline -10`
-5. `./init.sh`. Do not start new work on a red check.
+1. `pwd` and `git log --oneline -10`
+2. `./init.sh`: runs the checks, then prints the open features and the latest progress
+   entry. Do not start new work on a red check. Don't read `claude-progress.md` or
+   `feature_list.json` in full (they only grow); open one entry with
+   `node scripts/status.mjs --feature <id>`.
+3. Pick the **single** highest-priority entry with status `not_started` or `in_progress`.
+   Skip `blocked` unless Andrei resolved the blocker in this session.
 
 ## Scope rules
 
